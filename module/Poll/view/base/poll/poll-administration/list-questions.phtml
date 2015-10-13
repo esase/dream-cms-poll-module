@@ -1,0 +1,97 @@
+<?php $this->declareVars('subPageTitle', 'content') ?>
+<?php $this->subPageTitle = $this->translate('List of questions') ?>
+<?php $this->headTitle($this->subPageTitle) ?>
+
+<!-- render a header -->
+<?php echo $this->render('poll/poll-administration/_header') ?>
+
+<!-- render tabs -->
+<?php echo $this->partial('administration-partial/tab', [
+    'tabs' => $this->baseTabs,
+    'active' => 'list-questions' // selected action is the "list questions"
+]) ?>
+
+<?php $this->content = $this->partial('partial/data-grid', [
+    'controller' => 'polls-administration',
+    'action' => 'list-questions',
+    'order_by' => $this->order_by,
+    'order_type' => $this->order_type,
+    'per_page' => $this->per_page,
+    'default_order' => 'id',
+    'default_order_type' => 'desc',
+    'filter_form' => $this->filter_form,
+    'headers' => [
+        [
+            'title' => $this->translate('ID'),
+            'order_name' => 'id'
+        ],
+        [
+            'title' => $this->translate('Question'),
+            'order_name' => 'question'
+        ],
+        [
+            'title' => $this->translate('Date'),
+            'order_name' => 'created'
+        ],
+        [
+            'title' => $this->translate('Answers'),
+            'order_name' => 'answers'
+        ]
+    ],
+    'paginator' => $this->paginator,
+    'helpers' => [
+        'created' => 'applicationDate'
+    ],
+    'helpers_options' => [
+    ],
+    'actions' => [
+        'regular_actions' => [
+            [
+                'name' => $this->translate('Add a question'),
+                'controller' => 'polls-administration',
+                'action' => 'add-question',
+                'check_acl' => true
+            ]
+        ],
+        'multiple_actions' => [
+            [
+                'name' => $this->translate('Delete selected'),
+                'controller' => 'polls-administration',
+                'action' => 'delete-questions',
+                'check_acl' => true,
+                'confirm' => $this->translate('Selected questions will be deleted. Are you sure?')
+            ]
+        ],
+        'single_actions' => [
+            [
+                'name' => $this->translate('Edit the question'),
+                'controller' => 'polls-administration',
+                'action' => 'edit-question',
+                'check_acl' => true,
+                'image' => $this->layoutAsset('icon/edit_action.png', 'image')
+            ],
+            [
+                'name' => $this->translate('Browse answers'),
+                'controller' => 'polls-administration',
+                'action' => 'browse-answers',
+                'check_acl' => true,
+                'image' => $this->layoutAsset('icon/browse_action.png', 'image', 'poll')
+            ]
+        ]
+    ],
+    'actions_options' => [
+        'action_identity' => 'id',
+        'form_name' => 'poll-questions',
+        'multiple_actions' => [
+            'items_name' => 'questions[]'
+        ]
+    ],
+    'actions_extra_check' => [
+    ]
+]) ?>
+
+<!-- render a data grid -->
+<?php echo $this->partial('administration-partial/panel', [
+    'title' => $this->translate('Poll questions'),
+    'body' => $this->content
+]) ?>

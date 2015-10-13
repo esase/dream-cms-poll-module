@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"poll\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2015-10-12 11:45+0600\n"
+"PO-Revision-Date: 2015-10-13 12:11+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -16,8 +16,71 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
+msgid "Question has been added"
+msgstr "Вопрос был создан"
+
+msgid "Question already exists"
+msgstr "Вопрос уже существует"
+
+msgid "Selected questions have been deleted"
+msgstr "Выбранные вопросы были удалены"
+
+msgid "The selected question has been deleted"
+msgstr "Выбранный вопрос был удален"
+
+msgid "Poll questions"
+msgstr "Вопросы"
+
+msgid "Browse answers"
+msgstr "Просмотр ответов"
+
+msgid "Edit the question"
+msgstr "Редактировать вопрос"
+
+msgid "Selected questions will be deleted. Are you sure?"
+msgstr "Выбранные вопросы будут удалены. Вы уверены?"
+
+msgid "Add a question"
+msgstr "Добавить вопрос"
+
+msgid "Answers"
+msgstr "Ответы"
+
+msgid "List of questions"
+msgstr "Список вопросов"
+
+msgid "Question"
+msgstr "Вопрос"
+
 msgid "Poll"
 msgstr "Опрос"
 
 msgid "The module allows you publish polls on the site"
 msgstr "Модуль позволяет публиковать опросы на сайте"
+
+msgid "Event - Adding poll questions"
+msgstr "Добавление вопросов"
+
+msgid "Event - Poll question added by guest"
+msgstr "Гость добавил вопрос с идентификатором - \"%d\""
+
+msgid "Event - Poll question added by user"
+msgstr "\"%s\" добавил(а) вопрос идентификатором - \"%d\""
+
+msgid "Event - Deleting poll questions"
+msgstr "Удаление вопросов"
+
+msgid "Event - Poll question deleted by guest"
+msgstr "Гость удалил вопрос с идентификатором - \"%d\""
+
+msgid "Event - Poll question deleted by user"
+msgstr "\"%s\" удалил(а) вопрос идентификатором - \"%d\""
+
+msgid "ACL - Viewing poll questions in admin area"
+msgstr "Просмотр вопросов в админке"
+
+msgid "ACL - Deleting poll questions in admin area"
+msgstr "Удаление вопросов в админке"
+
+msgid "ACL - Adding poll questions in admin area"
+msgstr "Добавление вопросов в админке"

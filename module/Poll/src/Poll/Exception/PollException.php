@@ -20,34 +20,9 @@
  * Display of Attribution Information is required in Larger Works which are defined in the CPAL as a work
  * which combines Covered Code or portions thereof with code not governed by the terms of the CPAL.
  */
-return [
-    'controllers' => [
-        'invokables' => [
-            'polls-administration' => 'Poll\Controller\PollAdministrationController'
-        ]
-    ],
-    'router' => [
-        'routes' => [
-        ]
-    ],
-    'console' => [
-        'router' => [
-            'routes' => [
-            ]
-        ]
-    ],
-    'translator' => [
-        'translation_file_patterns' => [
-            [
-                'type'     => 'getText',
-                'base_dir' => __DIR__ . '/../language',
-                'pattern'  => '%s.mo',
-                'text_domain'  => 'default'
-            ]
-        ]
-    ],
-    'view_helpers' => [
-        'invokables' => [
-        ]
-    ]
-];
+namespace Poll\Exception;
+
+use Exception;
+
+class PollException extends Exception
+{}

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"poll\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2015-10-12 11:45+0600\n"
+"PO-Revision-Date: 2015-10-13 12:11+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -15,8 +15,71 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgid "Question has been added"
+msgstr "Question has been added"
+
+msgid "Question already exists"
+msgstr "Question already exists"
+
+msgid "Selected questions have been deleted"
+msgstr "Selected questions have been deleted"
+
+msgid "The selected question has been deleted"
+msgstr "The selected question has been deleted"
+
+msgid "Poll questions"
+msgstr "Poll questions"
+
+msgid "Browse answers"
+msgstr "Browse answers"
+
+msgid "Edit the question"
+msgstr "Edit the question"
+
+msgid "Selected questions will be deleted. Are you sure?"
+msgstr "Selected questions will be deleted. Are you sure?"
+
+msgid "Add a question"
+msgstr "Add a question"
+
+msgid "Answers"
+msgstr "Answers"
+
+msgid "List of questions"
+msgstr "List of questions"
+
+msgid "Question"
+msgstr "Question"
+
 msgid "Poll"
 msgstr "Poll"
 
 msgid "The module allows you publish polls on the site"
 msgstr "The module allows you publish polls on the site"
+
+msgid "Event - Adding poll questions"
+msgstr "Adding poll questions"
+
+msgid "Event - Poll question added by guest"
+msgstr "Guest added the poll question with id - \"%d\""
+
+msgid "Event - Poll question added by user"
+msgstr "\"%s\" added the poll question with id - \"%d\""
+
+msgid "Event - Deleting poll questions"
+msgstr "Deleting poll questions"
+
+msgid "Event - Poll question deleted by guest"
+msgstr "Guest deleted the poll question with id - \"%d\""
+
+msgid "Event - Poll question deleted by user"
+msgstr "\"%s\" deleted the poll question with id - \"%d\""
+
+msgid "ACL - Viewing poll questions in admin area"
+msgstr "Viewing poll questions in admin area"
+
+msgid "ACL - Deleting poll questions in admin area"
+msgstr "Deleting poll questions in admin area"
+
+msgid "ACL - Adding poll questions in admin area"
+msgstr "Adding poll questions in admin area"

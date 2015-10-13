@@ -1,0 +1,37 @@
+<?php $this->declareVars('subPageTitle') ?>
+<?php $this->subPageTitle = $this->translate('Add a question') ?>
+<?php $this->headTitle($this->subPageTitle) ?>
+<?php $this->headTitle($this->translate('List of questions')) ?>
+
+<!-- render a header -->
+<?php echo $this->render('poll/poll-administration/_header') ?>
+
+<!-- render tabs -->
+<?php echo $this->partial('administration-partial/tab', [
+    'tabs' => $this->baseTabs,
+    'active' => 'list-questions' // selected action is the "list questions"
+]) ?>
+
+<!-- render a breadcrumb -->
+<?php echo $this->partial('administration-partial/breadcrumb', [
+    'pages' => [
+        'list' => [
+            'name' => $this->translate('List of questions'),
+            'controller' => 'polls-administration',
+            'action' => 'list-questions',
+            'check_acl' => true
+        ],
+        'add_category' => [
+            'name' => $this->subPageTitle,
+            'controller' => 'polls-administration',
+            'action' => 'add-question',
+            'check_acl' => true
+        ]
+    ]
+]) ?>
+
+<!-- render a form -->
+<?php echo $this->partial('administration-partial/panel', [
+    'title' => $this->translate('General info'),
+    'body' => $this->partial('partial/form', ['form' => $this->question_form])
+]) ?>

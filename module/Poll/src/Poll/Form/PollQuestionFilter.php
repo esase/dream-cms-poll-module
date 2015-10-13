@@ -20,34 +20,49 @@
  * Display of Attribution Information is required in Larger Works which are defined in the CPAL as a work
  * which combines Covered Code or portions thereof with code not governed by the terms of the CPAL.
  */
-return [
-    'controllers' => [
-        'invokables' => [
-            'polls-administration' => 'Poll\Controller\PollAdministrationController'
+namespace Poll\Form;
+
+use Application\Form\ApplicationCustomFormBuilder;
+use Application\Form\ApplicationAbstractCustomForm;
+
+class PollQuestionFilter extends ApplicationAbstractCustomForm
+{
+    /**
+     * Form name
+     *
+     * @var string
+     */
+    protected $formName = 'poll-question-filter';
+
+    /**
+     * Form method
+     *
+     * @var string
+     */
+    protected $method = 'get';
+
+    /**
+     * List of not validated elements
+     *
+     * @var array
+     */
+    protected $notValidatedElements = ['submit'];
+
+    /**
+     * Form elements
+     *
+     * @var array
+     */
+    protected $formElements = [
+        'name' => [
+            'name' => 'question',
+            'type' => ApplicationCustomFormBuilder::FIELD_TEXT,
+            'label' => 'Question'
+        ],
+        'submit' => [
+            'name' => 'submit',
+            'type' => ApplicationCustomFormBuilder::FIELD_SUBMIT,
+            'label' => 'Search'
         ]
-    ],
-    'router' => [
-        'routes' => [
-        ]
-    ],
-    'console' => [
-        'router' => [
-            'routes' => [
-            ]
-        ]
-    ],
-    'translator' => [
-        'translation_file_patterns' => [
-            [
-                'type'     => 'getText',
-                'base_dir' => __DIR__ . '/../language',
-                'pattern'  => '%s.mo',
-                'text_domain'  => 'default'
-            ]
-        ]
-    ],
-    'view_helpers' => [
-        'invokables' => [
-        ]
-    ]
-];
+    ];
+}
