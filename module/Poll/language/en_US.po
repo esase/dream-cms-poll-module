@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"poll\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2015-10-13 12:11+0600\n"
+"PO-Revision-Date: 2015-10-13 17:02+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -14,6 +14,15 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Question will be deleted. Are you sure?"
+msgstr "Question will be deleted. Are you sure?"
+
+msgid "Delete the question"
+msgstr "Delete the question"
+
+msgid "Question has been edited"
+msgstr "Question has been edited"
 
 msgid "Question has been added"
 msgstr "Question has been added"
@@ -57,6 +66,15 @@ msgstr "Poll"
 msgid "The module allows you publish polls on the site"
 msgstr "The module allows you publish polls on the site"
 
+msgid "Event - Editing poll questions"
+msgstr "Editing poll questions"
+
+msgid "Event - Poll question edited by guest"
+msgstr "Guest edited the poll question with id - \"%d\""
+
+msgid "Event - Poll question edited by user"
+msgstr "\"%s\" edited the poll question with id - \"%d\""
+
 msgid "Event - Adding poll questions"
 msgstr "Adding poll questions"
 
@@ -83,3 +101,9 @@ msgstr "Deleting poll questions in admin area"
 
 msgid "ACL - Adding poll questions in admin area"
 msgstr "Adding poll questions in admin area"
+
+msgid "ACL - Editing poll questions in admin area"
+msgstr "Editing poll questions in admin area"
+
+msgid "ACL - Browsing poll answers in admin area"
+msgstr "Browsing poll answers in admin area"

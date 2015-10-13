@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"poll\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2015-10-13 12:11+0600\n"
+"PO-Revision-Date: 2015-10-13 17:02+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: Русский\n"
@@ -15,6 +15,15 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgid "Question will be deleted. Are you sure?"
+msgstr "Вопрос будет удален. Вы уверены?"
+
+msgid "Delete the question"
+msgstr "Удалить вопрос"
+
+msgid "Question has been edited"
+msgstr "Вопрос был отредактирован"
 
 msgid "Question has been added"
 msgstr "Вопрос был создан"
@@ -58,6 +67,15 @@ msgstr "Опрос"
 msgid "The module allows you publish polls on the site"
 msgstr "Модуль позволяет публиковать опросы на сайте"
 
+msgid "Event - Editing poll questions"
+msgstr "Редактирование вопросов"
+
+msgid "Event - Poll question edited by guest"
+msgstr "Гость отредактировал вопрос с идентификатором - \"%d\""
+
+msgid "Event - Poll question edited by user"
+msgstr "\"%s\" отредактировал(а) вопрос идентификатором - \"%d\""
+
 msgid "Event - Adding poll questions"
 msgstr "Добавление вопросов"
 
@@ -84,3 +102,9 @@ msgstr "Удаление вопросов в админке"
 
 msgid "ACL - Adding poll questions in admin area"
 msgstr "Добавление вопросов в админке"
+
+msgid "ACL - Editing poll questions in admin area"
+msgstr "Редактирование вопросов в админке"
+
+msgid "ACL - Browsing poll answers in admin area"
+msgstr "Просмотр ответов в админке"

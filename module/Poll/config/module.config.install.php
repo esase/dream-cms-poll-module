@@ -21,7 +21,7 @@
  * which combines Covered Code or portions thereof with code not governed by the terms of the CPAL.
  */
 return [
-    'compatable' => '2.3.0',
+    'compatable' => '2.3.2',
     'version' => '1.0.0',
     'vendor' => 'eSASe',
     'vendor_email' => 'alexermashev@gmail.com',

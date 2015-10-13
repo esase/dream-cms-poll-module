@@ -35,6 +35,45 @@ use Exception;
 class PollAdministration extends PollBase
 {
     /**
+     * Edit question
+     *
+     * @param integer $questionId
+     * @param array $questionInfo
+     *      string question
+     * @return boolean|string
+     */
+    public function editQuestion($questionId, array $questionInfo)
+    {
+        try {
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            $update = $this->update()
+                ->table('poll_question')
+                ->set($questionInfo)
+                ->where([
+                    'id' => $questionId,
+                    'language' => $this->getCurrentLanguage()
+                ]);
+
+            $statement = $this->prepareStatementForSqlObject($update);
+            $statement->execute();
+
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            ApplicationErrorLogger::log($e);
+
+            return $e->getMessage();
+        }
+
+        // fire the edit question event
+        PollEvent::fireEditQuestionEvent($questionId);
+
+        return true;
+    }
+
+    /**
      * Add new question
      *
      * @param array $questionInfo

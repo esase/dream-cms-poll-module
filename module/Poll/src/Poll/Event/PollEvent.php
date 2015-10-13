@@ -38,6 +38,32 @@ class PollEvent extends ApplicationAbstractEvent
     const ADD_QUESTION = 'poll_add_question';
 
     /**
+     * Edit question event
+     */
+    const EDIT_QUESTION = 'poll_edit_question';
+
+    /**
+     * Fire edit question event
+     *
+     * @param integer $questionId
+     * @return void
+     */
+    public static function fireEditQuestionEvent($questionId)
+    {
+        // event's description
+        $eventDesc = UserIdentityService::isGuest()
+            ? 'Event - Poll question edited by guest'
+            : 'Event - Poll question edited by user';
+
+        $eventDescParams = UserIdentityService::isGuest()
+            ? [$questionId]
+            : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $questionId];
+
+        self::fireEvent(self::EDIT_QUESTION,
+                $questionId, UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
+    }
+
+    /**
      * Fire add question event
      *
      * @param integer $questionId

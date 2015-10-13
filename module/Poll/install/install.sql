@@ -20,13 +20,16 @@ INSERT INTO `application_admin_menu` (`name`, `controller`, `action`, `module`, 
 INSERT INTO `acl_resource` (`resource`, `description`, `module`) VALUES
 ('polls_administration_list_questions', 'ACL - Viewing poll questions in admin area', @moduleId),
 ('polls_administration_delete_questions', 'ACL - Deleting poll questions in admin area', @moduleId),
-('polls_administration_add_question', 'ACL - Adding poll questions in admin area', @moduleId);
+('polls_administration_add_question', 'ACL - Adding poll questions in admin area', @moduleId),
+('polls_administration_edit_question', 'ACL - Editing poll questions in admin area', @moduleId),
+('polls_administration_browse_answers', 'ACL - Browsing poll answers in admin area', @moduleId);
 
 -- application events
 
 INSERT INTO `application_event` (`name`, `module`, `description`) VALUES
 ('poll_delete_question', @moduleId, 'Event - Deleting poll questions'),
-('poll_add_question', @moduleId, 'Event - Adding poll questions');
+('poll_add_question', @moduleId, 'Event - Adding poll questions'),
+('poll_edit_question', @moduleId, 'Event - Editing poll questions');
 
 -- module tables
 

@@ -104,7 +104,9 @@ class PollAdministrationController extends ApplicationAbstractAdministrationCont
     {
         $request = $this->getRequest();
 
-        if ($request->isPost()) {
+        if ($request->isPost() &&
+                $this->applicationCsrf()->isTokenValid($request->getPost('csrf'))) {
+
             if (null !== ($questionsIds = $request->getPost('questions', null))) {
                 // delete selected questions
                 $deleteResult = false;
@@ -154,6 +156,68 @@ class PollAdministrationController extends ApplicationAbstractAdministrationCont
         return $request->isXmlHttpRequest()
             ? $this->getResponse()
             : $this->redirectTo('polls-administration', 'list-questions', [], true);
+    }
+
+    /**
+     * Edit question action
+     */
+    public function editQuestionAction()
+    {
+        // get the question info
+        if (null == ($question = $this->
+                getModel()->getQuestionInfo($this->getSlug()))) {
+
+            return $this->redirectTo('polls-administration', 'list-questions');
+        }
+
+        // get the question form
+        $questionForm = $this->getServiceLocator()
+            ->get('Application\Form\FormManager')
+            ->getInstance('Poll\Form\PollQuestion')
+            ->setModel($this->getModel())
+            ->setCategoryId($question['id']);
+
+        $questionForm->getForm()->setData($question);
+
+        $request = $this->getRequest();
+
+        // validate the form
+        if ($request->isPost()) {
+            // fill the form with received values
+            $questionForm->getForm()->setData($request->getPost(), false);
+
+            // save data
+            if ($questionForm->getForm()->isValid()) {
+                // check the permission and increase permission's actions track
+                if (true !== ($result = $this->aclCheckPermission())) {
+                    return $result;
+                }
+
+                // edit the question
+                if (true === ($result = $this->getModel()->
+                            editQuestion($question['id'], $questionForm->getForm()->getData()))) {
+
+                    $this->flashMessenger()
+                        ->setNamespace('success')
+                        ->addMessage($this->getTranslator()->translate('Question has been edited'));
+                }
+                else {
+                    $this->flashMessenger()
+                        ->setNamespace('error')
+                        ->addMessage($this->getTranslator()->translate($result));
+                }
+
+                return $this->redirectTo('polls-administration', 'edit-question', [
+                    'slug' => $question['id']
+                ]);
+            }
+        }
+
+        return new ViewModel([
+            'csrf_token' => $this->applicationCsrf()->getToken(),
+            'question' => $question,
+            'question_form' => $questionForm->getForm()
+        ]);
     }
 
     /**
