@@ -213,4 +213,170 @@ class PollAdministration extends PollBase
 
         return $paginator;
     }
+
+    /**
+     * Get answers
+     *
+     * @param integer $questionId
+     * @param integer $page
+     * @param integer $perPage
+     * @param string $orderBy
+     * @param string $orderType
+     * @return \Zend\Paginator\Paginator
+     */
+    public function getAnswers($questionId, $page = 1, $perPage = 0, $orderBy = null, $orderType = null)
+    {
+        $orderFields = [
+            'id',
+            'answer',
+            'created',
+            'order'
+        ];
+
+        $orderType = !$orderType || $orderType == 'desc'
+            ? 'desc'
+            : 'asc';
+
+        $orderBy = $orderBy && in_array($orderBy, $orderFields)
+            ? $orderBy
+            : 'id';
+
+        $select = $this->select();
+        $select->from(['a' => 'poll_answer'])
+            ->columns([
+                'id',
+                'answer',
+                'order',
+                'created'
+            ])
+            ->where([
+                'question_id' => $questionId
+            ])
+            ->order($orderBy . ' ' . $orderType);
+
+        $paginator = new Paginator(new DbSelectPaginator($select, $this->adapter));
+        $paginator->setCurrentPageNumber($page);
+        $paginator->setItemCountPerPage(PaginationUtility::processPerPage($perPage));
+        $paginator->setPageRange(SettingService::getSetting('application_page_range'));
+
+        return $paginator;
+    }
+
+    /**
+     * Add answer
+     *
+     * @param integer $questionId
+     * @param array $answerInfo
+     *      string answer
+     *      integer order
+     * @return boolean|string
+     */
+    public function addAnswer($questionId, array $answerInfo)
+    {
+        try {
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            $insert = $this->insert()
+                ->into('poll_answer')
+                ->values(array_merge($answerInfo, [
+                    'question_id' => $questionId,
+                    'created' => time()
+                ]));
+
+            $statement = $this->prepareStatementForSqlObject($insert);
+            $statement->execute();
+            $insertId = $this->adapter->getDriver()->getLastGeneratedValue();
+
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            ApplicationErrorLogger::log($e);
+
+            return $e->getMessage();
+        }
+
+        // fire the add answer event
+        PollEvent::fireAddAnswerEvent($insertId);
+
+        return true;
+    }
+
+    /**
+     * Delete answer
+     *
+     * @param integer $answerId
+     * @return boolean|string
+     */
+    public function deleteAnswer($answerId)
+    {
+        try {
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            $delete = $this->delete()
+                ->from('poll_answer')
+                ->where([
+                    'id' => $answerId
+                ]);
+
+            $statement = $this->prepareStatementForSqlObject($delete);
+            $result = $statement->execute();
+
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            ApplicationErrorLogger::log($e);
+
+            return $e->getMessage();
+        }
+
+        $result =  $result->count() ? true : false;
+
+        // fire the delete answer event
+        if ($result) {
+            PollEvent::fireDeleteAnswerEvent($answerId);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Edit answer
+     *
+     * @param integer $answerId
+     * @param array $formData
+     *      string answer
+     *      integer order
+     * @return boolean|string
+     */
+    public function editAnswer($answerId, array $formData)
+    {
+        try {
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            $update = $this->update()
+                ->table('poll_answer')
+                ->set($formData)
+                ->where([
+                    'id' => $answerId
+                ]);
+
+            $statement = $this->prepareStatementForSqlObject($update);
+            $statement->execute();
+
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            ApplicationErrorLogger::log($e);
+
+            return $e->getMessage();
+        }
+
+        // fire the edit answer event
+        PollEvent::fireEditAnswerEvent($answerId);
+
+        return true;
+    }
 }

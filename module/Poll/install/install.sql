@@ -22,14 +22,20 @@ INSERT INTO `acl_resource` (`resource`, `description`, `module`) VALUES
 ('polls_administration_delete_questions', 'ACL - Deleting poll questions in admin area', @moduleId),
 ('polls_administration_add_question', 'ACL - Adding poll questions in admin area', @moduleId),
 ('polls_administration_edit_question', 'ACL - Editing poll questions in admin area', @moduleId),
-('polls_administration_browse_answers', 'ACL - Browsing poll answers in admin area', @moduleId);
+('polls_administration_browse_answers', 'ACL - Browsing poll answers in admin area', @moduleId),
+('polls_administration_add_answer', 'ACL - Adding poll answers in admin area', @moduleId),
+('polls_administration_delete_answers', 'ACL - Deleting poll answers in admin area', @moduleId),
+('polls_administration_edit_answer', 'ACL - Editing poll answers in admin area', @moduleId);
 
 -- application events
 
 INSERT INTO `application_event` (`name`, `module`, `description`) VALUES
 ('poll_delete_question', @moduleId, 'Event - Deleting poll questions'),
 ('poll_add_question', @moduleId, 'Event - Adding poll questions'),
-('poll_edit_question', @moduleId, 'Event - Editing poll questions');
+('poll_edit_question', @moduleId, 'Event - Editing poll questions'),
+('poll_add_answer', @moduleId, 'Event - Adding poll answers'),
+('poll_delete_answer', @moduleId, 'Event - Deleting poll answers'),
+('poll_edit_answer', @moduleId, 'Event - Editing poll answers');
 
 -- module tables
 
@@ -49,6 +55,7 @@ CREATE TABLE IF NOT EXISTS `poll_answer` (
     `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
     `answer` VARCHAR(255) NOT NULL,
     `question_id` INT(11) UNSIGNED NOT NULL,
+    `created` INT(10) UNSIGNED NOT NULL,
     `order` SMALLINT(5) NOT NULL DEFAULT '0',
     PRIMARY KEY (`id`),
     FOREIGN KEY (`question_id`) REFERENCES `poll_question`(`id`)

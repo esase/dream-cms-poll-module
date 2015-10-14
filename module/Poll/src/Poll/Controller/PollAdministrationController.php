@@ -265,4 +265,208 @@ class PollAdministrationController extends ApplicationAbstractAdministrationCont
             'question_form' => $questionForm->getForm()
         ]);
     }
+
+    /**
+     * Browse answers
+     */
+    public function browseAnswersAction()
+    {
+        // check the permission and increase permission's actions track
+        if (true !== ($result = $this->aclCheckPermission())) {
+            return $result;
+        }
+
+        // get the question info
+        if (null == ($question = $this->getModel()->getQuestionInfo($this->getSlug()))) {
+            return $this->redirectTo('polls-administration', 'list-questions');
+        }
+
+        // get data
+        $paginator = $this->getModel()->getAnswers($question['id'],
+                $this->getPage(), $this->getPerPage(), $this->getOrderBy(), $this->getOrderType());
+
+        return new ViewModel([
+            'csrf_token' => $this->applicationCsrf()->getToken(),
+            'question' => $question,
+            'paginator' => $paginator,
+            'order_by' => $this->getOrderBy(),
+            'order_type' => $this->getOrderType(),
+            'per_page' => $this->getPerPage()
+        ]);
+    }
+
+    /**
+     * Add answer action
+     */
+    public function addAnswerAction()
+    {
+        // get the question info
+        if (null == ($question = $this->getModel()->
+                getQuestionInfo($this->params()->fromQuery('question', -1)))) {
+
+            return $this->redirectTo('polls-administration', 'list-questions');
+        }
+
+        // get an answer form
+        $answerForm = $this->getServiceLocator()
+            ->get('Application\Form\FormManager')
+            ->getInstance('Poll\Form\PollAnswer');
+
+        $request  = $this->getRequest();
+
+        // validate the form
+        if ($request->isPost()) {
+            // fill the form with received values
+            $answerForm->getForm()->setData($request->getPost(), false);
+
+            // save data
+            if ($answerForm->getForm()->isValid()) {
+                // check the permission and increase permission's actions track
+                if (true !== ($result = $this->aclCheckPermission())) {
+                    return $result;
+                }
+
+                // add the answer
+                if (true === ($result = $this->getModel()->addAnswer($question['id'], $answerForm->getForm()->getData()))) {
+                    $this->flashMessenger()
+                        ->setNamespace('success')
+                        ->addMessage($this->getTranslator()->translate('Answer has been added'));
+                }
+                else {
+                    $this->flashMessenger()
+                        ->setNamespace('error')
+                        ->addMessage($this->getTranslator()->translate($result));
+                }
+
+                return $this->redirectTo('polls-administration', 'add-answer', [], false, [
+                    'question' => $question['id']
+                ]);
+            }
+        }
+
+        return new ViewModel([
+            'csrf_token' => $this->applicationCsrf()->getToken(),
+            'question' => $question,
+            'answer_form' => $answerForm->getForm()
+        ]);
+    }
+
+    /**
+     * Delete selected answers
+     */
+    public function deleteAnswersAction()
+    {
+        $request = $this->getRequest();
+
+        if ($request->isPost() &&
+                $this->applicationCsrf()->isTokenValid($request->getPost('csrf'))) {
+
+            if (null !== ($answersIds = $request->getPost('answers', null))) {
+                // delete selected answers
+                $deleteResult = false;
+                $deletedCount = 0;
+
+                foreach ($answersIds as $answerId) {
+                    // get answer info
+                    if (null == ($answerInfo = $this->getModel()->getAnswerInfo($answerId))) {
+                        continue;
+                    }
+
+                    // check the permission and increase permission's actions track
+                    if (true !== ($result = $this->aclCheckPermission(null, true, false))) {
+                        $this->flashMessenger()
+                            ->setNamespace('error')
+                            ->addMessage($this->getTranslator()->translate('Access Denied'));
+
+                        break;
+                    }
+
+                    // delete the answer
+                    if (true !== ($deleteResult = $this->getModel()->deleteAnswer($answerId))) {
+                        $this->flashMessenger()
+                            ->setNamespace('error')
+                            ->addMessage(($deleteResult ? $this->getTranslator()->translate($deleteResult)
+                                : $this->getTranslator()->translate('Error occurred')));
+
+                        break;
+                    }
+
+                    $deletedCount++;
+                }
+
+                if (true === $deleteResult) {
+                    $message = $deletedCount > 1
+                        ? 'Selected answers have been deleted'
+                        : 'The selected answer has been deleted';
+
+                    $this->flashMessenger()
+                        ->setNamespace('success')
+                        ->addMessage($this->getTranslator()->translate($message));
+                }
+            }
+        }
+
+        // redirect back
+        return $request->isXmlHttpRequest()
+            ? $this->getResponse()
+            : $this->redirectTo('polls-administration', 'browse-answers', [], true);
+    }
+
+    /**
+     * Edit answer action
+     */
+    public function editAnswerAction()
+    {
+        // get the answer info
+        if (null == ($answer = $this->getModel()->getAnswerInfo($this->getSlug()))) {
+            return $this->redirectTo('polls-administration', 'list-questions');
+        }
+
+        // get an answer form
+        $answerForm = $this->getServiceLocator()
+            ->get('Application\Form\FormManager')
+            ->getInstance('Poll\Form\PollAnswer');
+
+        // fill the form with default values
+        $answerForm->getForm()->setData($answer);
+        $request = $this->getRequest();
+
+        // validate the form
+        if ($request->isPost()) {
+            // fill the form with received values
+            $answerForm->getForm()->setData($request->getPost(), false);
+
+            // save data
+            if ($answerForm->getForm()->isValid()) {
+                // check the permission and increase permission's actions track
+                if (true !== ($result = $this->aclCheckPermission())) {
+                    return $result;
+                }
+
+                // edit the answer
+                if (true === ($result =
+                        $this->getModel()->editAnswer($answer['id'], $answerForm->getForm()->getData()))) {
+
+                    $this->flashMessenger()
+                        ->setNamespace('success')
+                        ->addMessage($this->getTranslator()->translate('Answer has been edited'));
+                }
+                else {
+                    $this->flashMessenger()
+                        ->setNamespace('error')
+                        ->addMessage($this->getTranslator()->translate($result));
+                }
+
+                return $this->redirectTo('polls-administration', 'edit-answer', [
+                    'slug' => $answer['id']
+                ]);
+            }
+        }
+
+        return new ViewModel([
+            'csrf_token' => $this->applicationCsrf()->getToken(),
+            'answer_form' => $answerForm->getForm(),
+            'answer' => $answer
+        ]);
+    }
 }

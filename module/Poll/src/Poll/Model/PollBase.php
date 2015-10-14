@@ -90,4 +90,45 @@ class PollBase extends ApplicationAbstractBase
 
         return $result->current();
     }
+
+    /**
+     * Get answer info
+     *
+     * @param integer $id
+     * @param boolean $currentLanguage
+     * @return array
+     */
+    public function getAnswerInfo($id, $currentLanguage = true)
+    {
+        $select = $this->select();
+        $select->from(['a' => 'poll_answer'])
+            ->columns([
+                'id',
+                'answer',
+                'question_id',
+                'created',
+                'order'
+            ])
+            ->join(
+                ['b' => 'poll_question'],
+                'a.question_id = b.id',
+                [
+                    'question'
+                ]
+            )
+            ->where([
+                'a.id' => $id
+            ]);
+
+        if ($currentLanguage) {
+            $select->where([
+                'b.language' => $this->getCurrentLanguage()
+            ]);
+        }
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        return $result->current();
+    }
 }

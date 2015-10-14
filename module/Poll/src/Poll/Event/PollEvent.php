@@ -43,6 +43,84 @@ class PollEvent extends ApplicationAbstractEvent
     const EDIT_QUESTION = 'poll_edit_question';
 
     /**
+     * Add answer event
+     */
+    const ADD_ANSWER = 'poll_add_answer';
+
+    /**
+     * Delete answer event
+     */
+    const DELETE_ANSWER = 'poll_delete_answer';
+
+    /**
+     * Edit answer event
+     */
+    const EDIT_ANSWER = 'poll_edit_answer';
+
+    /**
+     * Fire edit answer event
+     *
+     * @param integer $answerId
+     * @return void
+     */
+    public static function fireEditAnswerEvent($answerId)
+    {
+        // event's description
+        $eventDesc = UserIdentityService::isGuest()
+            ? 'Event - Poll answer edited by guest'
+            : 'Event - Poll answer edited by user';
+
+        $eventDescParams = UserIdentityService::isGuest()
+            ? [$answerId]
+            : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $answerId];
+
+        self::fireEvent(self::EDIT_ANSWER, $answerId,
+                UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
+    }
+
+    /**
+     * Fire delete answer event
+     *
+     * @param integer $answerId
+     * @return void
+     */
+    public static function fireDeleteAnswerEvent($answerId)
+    {
+        // event's description
+        $eventDesc = UserIdentityService::isGuest()
+            ? 'Event - Poll answer deleted by guest'
+            : 'Event - Poll answer deleted by user';
+
+        $eventDescParams = UserIdentityService::isGuest()
+            ? [$answerId]
+            : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $answerId];
+
+        self::fireEvent(self::DELETE_ANSWER, $answerId,
+                UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
+    }
+
+    /**
+     * Fire add answer event
+     *
+     * @param integer $answerId
+     * @return void
+     */
+    public static function fireAddAnswerEvent($answerId)
+    {
+        // event's description
+        $eventDesc = UserIdentityService::isGuest()
+            ? 'Event - Poll answer added by guest'
+            : 'Event - Poll answer added by user';
+
+        $eventDescParams = UserIdentityService::isGuest()
+            ? [$answerId]
+            : [UserIdentityService::getCurrentUserIdentity()['nick_name'], $answerId];
+
+        self::fireEvent(self::ADD_ANSWER, $answerId,
+                UserIdentityService::getCurrentUserIdentity()['user_id'], $eventDesc, $eventDescParams);
+    }
+
+    /**
      * Fire edit question event
      *
      * @param integer $questionId

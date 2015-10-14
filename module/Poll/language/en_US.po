@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dream CMS \"poll\" module\n"
 "POT-Creation-Date: 2013-07-19 11:59+0600\n"
-"PO-Revision-Date: 2015-10-13 17:02+0600\n"
+"PO-Revision-Date: 2015-10-14 12:50+0600\n"
 "Last-Translator: AlexE <alexermashev@gmail.com>\n"
 "Language-Team: \n"
 "Language: English\n"
@@ -14,6 +14,45 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Delete the answer"
+msgstr "Delete the answer"
+
+msgid "Editing"
+msgstr "Editing"
+
+msgid "Answer will be deleted. Are you sure?"
+msgstr "Answer will be deleted. Are you sure?"
+
+msgid "Answer has been edited"
+msgstr "Answer has been edited"
+
+msgid "The selected answer has been deleted"
+msgstr "The selected answer has been deleted"
+
+msgid "Selected answers have been deleted"
+msgstr "Selected answers have been deleted"
+
+msgid "Answer"
+msgstr "Answer"
+
+msgid "New answer"
+msgstr "New answer"
+
+msgid "Answer has been added"
+msgstr "Answer has been added"
+
+msgid "Order"
+msgstr "Order"
+
+msgid "Edit the answer"
+msgstr "Edit the answer"
+
+msgid "Selected answers will be deleted. Are you sure?"
+msgstr "Selected answers will be deleted. Are you sure?"
+
+msgid "Add an answer"
+msgstr "Add an answer"
 
 msgid "Question will be deleted. Are you sure?"
 msgstr "Question will be deleted. Are you sure?"
@@ -66,6 +105,33 @@ msgstr "Poll"
 msgid "The module allows you publish polls on the site"
 msgstr "The module allows you publish polls on the site"
 
+msgid "Event - Editing poll answers"
+msgstr "Editing poll answers"
+
+msgid "Event - Poll answer edited by guest"
+msgstr "Guest edited the poll answer with id - \"%d\""
+
+msgid "Event - Poll answer edited by user"
+msgstr "\"%s\" edited the poll answer with id - \"%d\""
+
+msgid "Event - Deleting poll answers"
+msgstr "Deleting poll answers"
+
+msgid "Event - Poll answer deleted by guest"
+msgstr "Guest deleted the poll answer with id - \"%d\""
+
+msgid "Event - Poll answer deleted by user"
+msgstr "\"%s\" deleted the poll answer with id - \"%d\""
+
+msgid "Event - Adding poll answers"
+msgstr "Adding poll answers"
+
+msgid "Event - Poll answer added by guest"
+msgstr "Guest added the poll answer with id - \"%d\""
+
+msgid "Event - Poll answer added by user"
+msgstr "\"%s\" added the poll answer with id - \"%d\""
+
 msgid "Event - Editing poll questions"
 msgstr "Editing poll questions"
 
@@ -107,3 +173,12 @@ msgstr "Editing poll questions in admin area"
 
 msgid "ACL - Browsing poll answers in admin area"
 msgstr "Browsing poll answers in admin area"
+
+msgid "ACL - Adding poll answers in admin area"
+msgstr "Adding poll answers in admin area"
+
+msgid "ACL - Deleting poll answers in admin area"
+msgstr "Deleting poll answers in admin area"
+
+msgid "ACL - Editing poll answers in admin area"
+msgstr "Editing poll answers in admin area"
