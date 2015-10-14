@@ -1,0 +1,113 @@
+<?php $this->declareVars('content', 'extraActions', 'subPageTitle', 'parentPageTitle', 'currentPageTitle', 'processedQuestion') ?>
+<?php $this->processedQuestion = mb_strlen($this->answer['question']) < 60
+    ? $this->answer['question']
+    : mb_substr($this->answer['question'], 0, 60) . '...'
+?>
+
+<?php $this->parentPageTitle = $this->translate('List of questions') ?>
+<?php $this->subPageTitle = $this->translate('Browse answers') ?>
+<?php $this->currentPageTitle = $this->translate('Edit the answer') ?>
+
+<?php $this->headTitle($this->currentPageTitle) ?>
+<?php $this->headTitle($this->subPageTitle) ?>
+<?php $this->headTitle($this->processedQuestion) ?>
+<?php $this->headTitle($this->parentPageTitle) ?>
+
+<!-- render a header -->
+<?php echo $this->render('poll/poll-administration/_header') ?>
+
+<!-- render tabs -->
+<?php echo $this->partial('administration-partial/tab', [
+    'tabs' => $this->baseTabs,
+    'active' => 'list-questions' // selected action is the "list-questions"
+]) ?>
+
+<!-- render a breadcrumb -->
+<?php echo $this->partial('administration-partial/breadcrumb', [
+    'pages' => [
+        'list' => [
+            'name' => $this->parentPageTitle,
+            'controller' => 'polls-administration',
+            'action' => 'list-questions',
+            'check_acl' => true
+        ],
+        'browse_answers' => [
+            'name' => $this->processedQuestion . ' - ' . $this->subPageTitle,
+            'controller' => 'polls-administration',
+            'action' => 'browse-answers',
+            'params' => [
+                'slug' => $this->answer['question_id'],
+            ],
+            'check_acl' => true
+        ],
+        'edit_answer' => [
+            'name' => $this->currentPageTitle,
+            'controller' => 'polls-administration',
+            'action' => 'edit-answer',
+            'check_acl' => true
+        ]
+    ]
+]) ?>
+
+<?php $this->extraActions = trim($this->partial('administration-partial/extra-actions', ['pages' => [
+    [
+        'controller' => 'polls-administration',
+        'action' => 'delete-answers',
+        'name' => $this->translate('Delete the answer'),
+        'check_acl' => true,
+        'confirm' => $this->translate('Answer will be deleted. Are you sure?'),
+        'confirm_callback' => "function(link) { $.post($(link).attr('href'), {'csrf' : '{$this->csrf_token}', 'answers' : [{$this->answer['id']}]}, function(){location.href='{$this->url('application/page', ['controller' => 'polls-administration', 'action' => 'browse-answers', 'slug' => $this->answer['question_id']], ['force_canonical' => true])}'}) }"
+    ],
+    [
+        'controller' => 'polls-administration',
+        'action' => 'delete-questions',
+        'name' => $this->translate('Delete the question'),
+        'check_acl' => true,
+        'confirm' => $this->translate('Question will be deleted. Are you sure?'),
+        'confirm_callback' => "function(link) { $.post($(link).attr('href'), {'csrf' : '{$this->csrf_token}', 'questions' : [{$this->answer['question_id']}]}, function(){location.href='{$this->url('application/page', ['controller' => 'polls-administration', 'action' => 'list-questions'], ['force_canonical' => true])}'}) }"
+   ],
+   [
+    'controller' => 'polls-administration',
+    'action' => 'add-answer',
+    'query' => [
+        'question' => $this->answer['question_id']
+    ],
+    'name' => $this->translate('Add an answer'),
+    'check_acl' => true
+    ],
+    [
+        'controller' => 'polls-administration',
+        'action' => 'add-question',
+        'name' => $this->translate('Add a question'),
+        'check_acl' => true
+    ]]
+]))
+?>
+
+<!-- notification -->
+<?php echo $this->partial('partial/notification') ?>
+
+<div class="row">
+    <?php if ($this->extraActions): ?>
+        <div class="col-md-8">
+            <!-- render a form -->
+            <?php echo $this->partial('administration-partial/panel', [
+                'title' => $this->translate('Editing'),
+                'body' => $this->partial('partial/form', ['form' => $this->answer_form]),
+                'notification' => false
+            ]) ?>
+        </div>
+        <div class="col-md-4">
+            <?php echo $this->extraActions ?>
+        </div>
+    <?php else: ?>
+        <div class="col-md-12">
+            <!-- render a form -->
+            <?php echo $this->partial('administration-partial/panel', [
+                'title' => $this->translate('Editing'),
+                'body' => $this->partial('partial/form', ['form' => $this->answer_form]),
+                'notification' => false
+            ]) ?>
+        </div>
+    <?php endif ?>
+</div>

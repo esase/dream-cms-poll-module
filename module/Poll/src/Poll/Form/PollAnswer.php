@@ -20,40 +20,62 @@
  * Display of Attribution Information is required in Larger Works which are defined in the CPAL as a work
  * which combines Covered Code or portions thereof with code not governed by the terms of the CPAL.
  */
-return [
-    'compatable' => '2.3.2',
-    'version' => '1.0.0',
-    'vendor' => 'eSASe',
-    'vendor_email' => 'alexermashev@gmail.com',
-    'description' => 'The module allows you publish polls on the site',
-    'system_requirements' => [
-        'php_extensions' => [
+namespace Poll\Form;
+
+use Application\Form\ApplicationAbstractCustomForm;
+use Application\Form\ApplicationCustomFormBuilder;
+
+class PollAnswer extends ApplicationAbstractCustomForm
+{
+    /**
+     * Answer max string length
+     */
+    const ANSWER_MAX_LENGTH = 255;
+
+    /**
+     * Form name
+     *
+     * @var string
+     */
+    protected $formName = 'poll-answer';
+
+    /**
+     * List of ignored elements
+     *
+     * @var array
+     */
+    protected $ignoredElements = [];
+
+    /**
+     * Form elements
+     *
+     * @var array
+     */
+    protected $formElements = [
+        'name' => [
+            'name' => 'answer',
+            'type' => ApplicationCustomFormBuilder::FIELD_TEXT,
+            'label' => 'Answer',
+            'required' => true,
+            'max_length' => self::ANSWER_MAX_LENGTH,
+            'category' => 'General info'
         ],
-        'php_settings' => [
+        'order' => [
+            'name' => 'order',
+            'type' => ApplicationCustomFormBuilder::FIELD_INTEGER,
+            'label' => 'Order',
+            'required' => true,
+            'value' => 0,
+            'category' => 'Miscellaneous info'
         ],
-        'php_enabled_functions' => [
+        'csrf' => [
+            'name' => 'csrf',
+            'type' => ApplicationCustomFormBuilder::FIELD_CSRF
         ],
-        'php_version' => null
-    ],
-    'module_depends' => [
-    ],
-    'clear_caches' => [
-        'setting'       => false,
-        'time_zone'     => false,
-        'admin_menu'    => false,
-        'js_cache'      => false,
-        'css_cache'     => false,
-        'layout'        => false,
-        'localization'  => false,
-        'page'          => false,
-        'user'          => false,
-        'xmlrpc'        => false
-    ],
-    'resources' => [
-    ],
-    'install_sql' => __DIR__ . '/../install/install.sql',
-    'install_intro' => null,
-    'uninstall_sql' => __DIR__ . '/../install/uninstall.sql',
-    'uninstall_intro' => null,
-    'layout_path' => 'poll'
-];
+        'submit' => [
+            'name' => 'submit',
+            'type' => ApplicationCustomFormBuilder::FIELD_SUBMIT,
+            'label' => 'Submit'
+        ]
+    ];
+}

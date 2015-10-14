@@ -23,6 +23,7 @@
 return [
     'controllers' => [
         'invokables' => [
+            'polls-administration' => 'Poll\Controller\PollAdministrationController'
         ]
     ],
     'router' => [
