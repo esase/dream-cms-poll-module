@@ -6,8 +6,17 @@
     }
     .poll-wrapper li {
         list-style: none;
+        padding-top:10px;
+    }
+    .poll-wrapper .poll-date {
+        float:left;
+    }
+
+    .poll-wrapper .poll-result {
+        float:right;
     }
 </style>
+
 
 <div id="poll-wrapper-<?php echo (int) $this->connection_id ?>" class="poll-wrapper">
     <div class="media">
@@ -15,16 +24,15 @@
             <h4 class="media-heading">
                 <?php echo $this->escapeHtml($this->question_info['question']) ?>
             </h4>
-            <ul>
-                <?php foreach($this->answers as $answer):  ?>
-                    <li><input  type="radio" data-id="<?php echo (int) $answer['id'] ?>" name="poll-<?php echo (int) $this->connection_id ?>" />
-                        <?php echo $this->escapeHtml($answer['answer']) ?>
-                    </li>
-                <?php endforeach ?>
-            </ul>
-            <div class="pull-left"><?php echo $this->applicationDate($this->question_info['created']) ?></div>
-            <div class="pull-right">
+            <div class="poll-values-wrapper">
+                <?php echo $this->answers ?>
+            </div>
+            <div class="poll-date"><?php echo $this->applicationDate($this->question_info['created']) ?></div>
+            <div class="poll-result">
                 <a href="#">Result</a>
+            </div>
+            <div class="poll-result" style="display: none">
+                <a href="#">Poll</a>
             </div>
             <div class="clearfix"></div>
         </div>
@@ -46,7 +54,9 @@
              */
             var pollOptions =
             {
-                "wrapper_id": null
+                "url" : null,
+                "wrapper_id": null,
+                "values_wrapper" : null
             };
 
             // extend options
@@ -56,8 +66,13 @@
              * Init
              */
             var init = function () {
+                // make a vote
                 $(pollOptions.wrapper_id).find(":input").click(function () {
-                    alert($(this).attr("data-id"));
+                    $.post(pollOptions.url, {"widget_action" : "make_vote", "answer_id" : $(this).attr("data-id")}, function(data){
+                        data =  $.parseJSON(data);
+
+                        $(pollOptions.wrapper_id).find(pollOptions.values_wrapper).html(data.data);
+                    });
                 });
             }
 
@@ -65,7 +80,9 @@
         }
 
         var poll = new Poll({
-            'wrapper_id': "#poll-wrapper-<?php echo (int) $this->connection_id ?>"
+            'url' : '<?php echo $this->escapeJs($this->widget_url) ?>',
+            'wrapper_id': "#poll-wrapper-<?php echo (int) $this->connection_id ?>",
+            'values_wrapper' : '.poll-values-wrapper'
         });
     });
 </script>

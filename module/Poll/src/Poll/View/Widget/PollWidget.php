@@ -56,6 +56,9 @@ class PollWidget extends PageAbstractWidget
      */
     public function getContent() 
     {
+        //TODO: add permission for making votes
+        // TODO: Add csrf key
+
         if (null != ($questionId = $this->getWidgetSetting('poll_question'))) {
             // get a question info
             if (null != ($questionInfo = $this->getModel()->getQuestionInfo($questionId))) {
@@ -64,15 +67,67 @@ class PollWidget extends PageAbstractWidget
 
                 if (count($answers) > 1)
                 {
-                    return $this->getView()->partial('poll/widget/poll', [
+                    // process post actions
+                    if ($this->getRequest()->isPost()) {
+                        if (false !== ($action = $this->
+                            getRequest()->getPost('widget_action', false)) && $this->getRequest()->isXmlHttpRequest()) {
+
+                            switch ($action) {
+                                case 'make_vote' :
+                                    return $this->getView()->json([
+                                        'data' => $this->makeVote()
+                                    ]);
+
+                                default :
+                            }
+                        }
+                    }
+
+                    return $this->getView()->partial('poll/widget/poll-init', [
+                        'widget_url' => $this->getWidgetConnectionUrl(),
                         'connection_id' => $this->widgetConnectionId,
                         'question_info' => $questionInfo,
-                        'answers' => $answers
+                        'answers' => $this->getPollAnswers($answers)
                     ]);
                 }
             }
         }
 
         return false;
+    }
+
+    /**
+     * Make vote
+     *
+     * @return string
+     */
+    protected function makeVote()
+    {
+        return $this->getPollResult();
+    }
+
+    /**
+     * Get poll result
+     *
+     * @return string
+     */
+    protected function getPollResult()
+    {
+        return $this->getView()->partial('poll/widget/poll-results', [
+        ]);
+    }
+
+    /**
+     * Get poll answers
+     *
+     * @param array $answers
+     * @return string
+     */
+    protected function getPollAnswers($answers)
+    {
+        return $this->getView()->partial('poll/widget/poll-answers', [
+            'connection_id' => $this->widgetConnectionId,
+            'answers' => $answers
+        ]);
     }
 }
