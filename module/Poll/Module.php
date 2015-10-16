@@ -63,6 +63,7 @@ class Module
     {
         return [
             'invokables' => [
+                'pollWidget' => 'Poll\View\Widget\PollWidget'
             ],
             'factories' => [
             ]

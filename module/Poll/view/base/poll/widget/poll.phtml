@@ -1,0 +1,71 @@
+<style>
+    .poll-wrapper ul {
+        padding:0;
+        margin-top:20px;
+        margin-bottom:20px;
+    }
+    .poll-wrapper li {
+        list-style: none;
+    }
+</style>
+
+<div id="poll-wrapper-<?php echo (int) $this->connection_id ?>" class="poll-wrapper">
+    <div class="media">
+        <div class="media-body">
+            <h4 class="media-heading">
+                <?php echo $this->escapeHtml($this->question_info['question']) ?>
+            </h4>
+            <ul>
+                <?php foreach($this->answers as $answer):  ?>
+                    <li><input  type="radio" data-id="<?php echo (int) $answer['id'] ?>" name="poll-<?php echo (int) $this->connection_id ?>" />
+                        <?php echo $this->escapeHtml($answer['answer']) ?>
+                    </li>
+                <?php endforeach ?>
+            </ul>
+            <div class="pull-left"><?php echo $this->applicationDate($this->question_info['created']) ?></div>
+            <div class="pull-right">
+                <a href="#">Result</a>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        /**
+         * Poll
+         *
+         * @param array object options
+         */
+        Poll = function (options) {
+            /**
+             * Poll options
+             *
+             * @var array object
+             */
+            var pollOptions =
+            {
+                "wrapper_id": null
+            };
+
+            // extend options
+            pollOptions = $.extend({}, pollOptions, options);
+
+            /**
+             * Init
+             */
+            var init = function () {
+                $(pollOptions.wrapper_id).find(":input").click(function () {
+                    alert($(this).attr("data-id"));
+                });
+            }
+
+            init();
+        }
+
+        var poll = new Poll({
+            'wrapper_id': "#poll-wrapper-<?php echo (int) $this->connection_id ?>"
+        });
+    });
+</script>

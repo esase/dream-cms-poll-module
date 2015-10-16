@@ -37,6 +37,15 @@ INSERT INTO `application_event` (`name`, `module`, `description`) VALUES
 ('poll_delete_answer', @moduleId, 'Event - Deleting poll answers'),
 ('poll_edit_answer', @moduleId, 'Event - Editing poll answers');
 
+-- system pages and widgets
+
+INSERT INTO `page_widget` (`name`, `module`, `type`, `description`, `duplicate`, `forced_visibility`, `depend_page_id`) VALUES
+('pollWidget', @moduleId, 'public', 'Poll', 1, NULL, NULL);
+SET @widgetId = (SELECT LAST_INSERT_ID());
+
+INSERT INTO `page_widget_setting` (`name`, `widget`, `label`, `type`, `required`, `order`, `category`, `description`, `check`,  `check_message`, `values_provider`) VALUES
+('poll_question', @widgetId, 'Question', 'select', 1, 1, 1, NULL, NULL, NULL, 'return Poll\\Service\\Poll::getAllQuestions();');
+
 -- module tables
 
 CREATE TABLE IF NOT EXISTS `poll_question` (

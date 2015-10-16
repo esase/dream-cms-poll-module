@@ -20,40 +20,41 @@
  * Display of Attribution Information is required in Larger Works which are defined in the CPAL as a work
  * which combines Covered Code or portions thereof with code not governed by the terms of the CPAL.
  */
-return [
-    'compatable' => '2.3.2',
-    'version' => '1.0.0',
-    'vendor' => 'eSASe',
-    'vendor_email' => 'alexermashev@gmail.com',
-    'description' => 'The module allows you publish polls on the site',
-    'system_requirements' => [
-        'php_extensions' => [
-        ],
-        'php_settings' => [
-        ],
-        'php_enabled_functions' => [
-        ],
-        'php_version' => null
-    ],
-    'module_depends' => [
-    ],
-    'clear_caches' => [
-        'setting'       => false,
-        'time_zone'     => false,
-        'admin_menu'    => false,
-        'js_cache'      => false,
-        'css_cache'     => false,
-        'layout'        => false,
-        'localization'  => false,
-        'page'          => true,
-        'user'          => false,
-        'xmlrpc'        => false
-    ],
-    'resources' => [
-    ],
-    'install_sql' => __DIR__ . '/../install/install.sql',
-    'install_intro' => null,
-    'uninstall_sql' => __DIR__ . '/../install/uninstall.sql',
-    'uninstall_intro' => null,
-    'layout_path' => 'poll'
-];
+namespace Poll\Service;
+
+use Application\Service\ApplicationServiceLocator as ServiceLocatorService;
+use Localization\Service\Localization as LocalizationService;
+
+class Poll
+{
+    /**
+     * Questions
+     *
+     * @var array
+     */
+    protected static $questions = null;
+
+    /**
+     * Get all questions
+     *
+     * @return array
+     */
+    public static function getAllQuestions()
+    {
+        if (null === self::$questions) {
+            $questions = ServiceLocatorService::getServiceLocator()
+                ->get('Application\Model\ModelManager')
+                ->getInstance('Poll\Model\PollBase')
+                ->getAllQuestions(LocalizationService::getCurrentLocalization()['language']);
+
+			// process questions
+			self::$questions = [];
+
+			foreach ($questions as $question) {
+				self::$questions[$question->id] = $question->question;
+			}
+        }
+
+        return self::$questions;
+    }
+}

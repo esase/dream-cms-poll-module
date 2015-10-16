@@ -20,40 +20,59 @@
  * Display of Attribution Information is required in Larger Works which are defined in the CPAL as a work
  * which combines Covered Code or portions thereof with code not governed by the terms of the CPAL.
  */
-return [
-    'compatable' => '2.3.2',
-    'version' => '1.0.0',
-    'vendor' => 'eSASe',
-    'vendor_email' => 'alexermashev@gmail.com',
-    'description' => 'The module allows you publish polls on the site',
-    'system_requirements' => [
-        'php_extensions' => [
-        ],
-        'php_settings' => [
-        ],
-        'php_enabled_functions' => [
-        ],
-        'php_version' => null
-    ],
-    'module_depends' => [
-    ],
-    'clear_caches' => [
-        'setting'       => false,
-        'time_zone'     => false,
-        'admin_menu'    => false,
-        'js_cache'      => false,
-        'css_cache'     => false,
-        'layout'        => false,
-        'localization'  => false,
-        'page'          => true,
-        'user'          => false,
-        'xmlrpc'        => false
-    ],
-    'resources' => [
-    ],
-    'install_sql' => __DIR__ . '/../install/install.sql',
-    'install_intro' => null,
-    'uninstall_sql' => __DIR__ . '/../install/uninstall.sql',
-    'uninstall_intro' => null,
-    'layout_path' => 'poll'
-];
+namespace Poll\View\Widget;
+
+use Page\View\Widget\PageAbstractWidget;
+
+class PollWidget extends PageAbstractWidget
+{
+    /**
+     * Model instance
+     *
+     * @var \Poll\Model\PollWidget
+     */
+    protected $model;
+
+    /**
+     * Get model
+     *
+     * @return \Poll\Model\PollWidget
+     */
+    protected function getModel()
+    {
+        if (!$this->model) {
+            $this->model = $this->getServiceLocator()
+                ->get('Application\Model\ModelManager')
+                ->getInstance('Poll\Model\PollWidget');
+        }
+
+        return $this->model;
+    }
+
+    /**
+     * Get widget content
+     *
+     * @return string|boolean
+     */
+    public function getContent() 
+    {
+        if (null != ($questionId = $this->getWidgetSetting('poll_question'))) {
+            // get a question info
+            if (null != ($questionInfo = $this->getModel()->getQuestionInfo($questionId))) {
+                // get list of answers
+                $answers = $this->getModel()->getAnswers($questionId);
+
+                if (count($answers) > 1)
+                {
+                    return $this->getView()->partial('poll/widget/poll', [
+                        'connection_id' => $this->widgetConnectionId,
+                        'question_info' => $questionInfo,
+                        'answers' => $answers
+                    ]);
+                }
+            }
+        }
+
+        return false;
+    }
+}
