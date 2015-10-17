@@ -63,7 +63,8 @@ class Module
     {
         return [
             'invokables' => [
-                'pollWidget' => 'Poll\View\Widget\PollWidget'
+                'pollWidget' => 'Poll\View\Widget\PollWidget',
+                'pollResult' => 'Poll\View\Helper\PollResult'
             ],
             'factories' => [
             ]

@@ -1,19 +1,31 @@
 <style>
-    .poll-wrapper ul {
+    .poll-wrapper .poll-values-wrapper ul.poll-answers,
+    .poll-wrapper .poll-values-wrapper ul.poll-result {
         padding:0;
         margin-top:20px;
         margin-bottom:20px;
     }
-    .poll-wrapper li {
+
+    .poll-wrapper .poll-values-wrapper ul.poll-answers li,
+    .poll-wrapper .poll-values-wrapper ul.poll-result li{
         list-style: none;
         padding-top:10px;
+    }
+
+    .poll-wrapper .poll-values-wrapper .poll-result-stat {
+        width: 25px;
+        padding-left:5px;
     }
     .poll-wrapper .poll-date {
         float:left;
     }
 
-    .poll-wrapper .poll-result {
+    .poll-wrapper .poll-links {
         float:right;
+    }
+
+    .poll-wrapper .poll-links.not-active-poll-link {
+        display: none;
     }
 </style>
 
@@ -24,65 +36,27 @@
             <h4 class="media-heading">
                 <?php echo $this->escapeHtml($this->question_info['question']) ?>
             </h4>
-            <div class="poll-values-wrapper">
+            <div class="poll-values-wrapper relative-wrapper">
                 <?php echo $this->answers ?>
             </div>
             <div class="poll-date"><?php echo $this->applicationDate($this->question_info['created']) ?></div>
-            <div class="poll-result">
-                <a href="#">Result</a>
+            <div class="poll-links" data-action="results">
+                <a href="#"><?php echo $this->translate('Result') ?></a>
             </div>
-            <div class="poll-result" style="display: none">
-                <a href="#">Poll</a>
+            <div class="poll-links not-active-poll-link" data-action="answers">
+                <a href="#"><?php echo $this->translate('Poll') ?></a>
             </div>
             <div class="clearfix"></div>
         </div>
     </div>
 </div>
 
-<script type="text/javascript">
-    $(document).ready(function() {
-        /**
-         * Poll
-         *
-         * @param array object options
-         */
-        Poll = function (options) {
-            /**
-             * Poll options
-             *
-             * @var array object
-             */
-            var pollOptions =
-            {
-                "url" : null,
-                "wrapper_id": null,
-                "values_wrapper" : null
-            };
-
-            // extend options
-            pollOptions = $.extend({}, pollOptions, options);
-
-            /**
-             * Init
-             */
-            var init = function () {
-                // make a vote
-                $(pollOptions.wrapper_id).find(":input").click(function () {
-                    $.post(pollOptions.url, {"widget_action" : "make_vote", "answer_id" : $(this).attr("data-id")}, function(data){
-                        data =  $.parseJSON(data);
-
-                        $(pollOptions.wrapper_id).find(pollOptions.values_wrapper).html(data.data);
-                    });
-                });
-            }
-
-            init();
-        }
-
-        var poll = new Poll({
-            'url' : '<?php echo $this->escapeJs($this->widget_url) ?>',
-            'wrapper_id': "#poll-wrapper-<?php echo (int) $this->connection_id ?>",
-            'values_wrapper' : '.poll-values-wrapper'
-        });
+<?php $this->inlineScript()->captureStart() ?>
+    var poll = new Poll({
+        "url" : "<?php echo $this->escapeJs($this->widget_url) ?>",
+        "wrapper_id": "#poll-wrapper-<?php echo (int) $this->connection_id ?>",
+        "values_wrapper" : ".poll-values-wrapper",
+        "links" : ".poll-links",
+        "not_active_link" : "not-active-poll-link"
     });
-</script>
+<?php $this->inlineScript()->captureEnd() ?>

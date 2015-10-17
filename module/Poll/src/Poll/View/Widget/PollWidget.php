@@ -50,6 +50,17 @@ class PollWidget extends PageAbstractWidget
     }
 
     /**
+     * Include js and css files
+     *
+     * @return void
+     */
+    public function includeJsCssFiles()
+    {
+        $this->getView()->layoutHeadScript()->
+                appendFile($this->getView()->layoutAsset('poll.js', 'js', 'poll'));
+    }
+
+    /**
      * Get widget content
      *
      * @return string|boolean
@@ -70,16 +81,34 @@ class PollWidget extends PageAbstractWidget
                     // process post actions
                     if ($this->getRequest()->isPost()) {
                         if (false !== ($action = $this->
-                            getRequest()->getPost('widget_action', false)) && $this->getRequest()->isXmlHttpRequest()) {
+                                getRequest()->getPost('widget_action', false)) && $this->getRequest()->isXmlHttpRequest()) {
 
                             switch ($action) {
                                 case 'make_vote' :
                                     return $this->getView()->json([
-                                        'data' => $this->makeVote()
+                                        'data' => $this->makeVote($questionId, $answers)
                                     ]);
 
                                 default :
                             }
+                        }
+                    }
+
+                    // process get actions
+                    if (false !== ($action = $this->getRequest()->
+                            getQuery('widget_action')) && $this->getRequest()->isXmlHttpRequest()) {
+
+                        switch ($action) {
+                            case 'get_answers' :
+                                return $this->getView()->json([
+                                    'data' => $this->getPollAnswers($answers)
+                                ]);
+
+                            case 'get_results' :
+                            default :
+                                return $this->getView()->json([
+                                    'data' => $this->getPollResult($questionId, $answers)
+                                ]);
                         }
                     }
 
@@ -99,21 +128,27 @@ class PollWidget extends PageAbstractWidget
     /**
      * Make vote
      *
+     * @param integer $questionId
+     * @param array $answers
      * @return string
      */
-    protected function makeVote()
+    protected function makeVote($questionId, $answers)
     {
-        return $this->getPollResult();
+        return $this->getPollResult($questionId, $answers);
     }
 
     /**
      * Get poll result
      *
+     * @param integer $questionId
+     * @param array $answers
      * @return string
      */
-    protected function getPollResult()
+    protected function getPollResult($questionId, $answers)
     {
         return $this->getView()->partial('poll/widget/poll-results', [
+            'question_id' => $questionId,
+            'answers' => $answers,
         ]);
     }
 

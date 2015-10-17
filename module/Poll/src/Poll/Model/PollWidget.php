@@ -23,9 +23,48 @@
 namespace Poll\Model;
 
 use Zend\Db\ResultSet\ResultSet;
+use Zend\Db\Sql\Expression as Expression;
 
 class PollWidget extends PollBase
 {
+    /**
+     * Get answer track
+     *
+     * @param integer $questionId
+     * @return array
+     */
+    public function getAnswerTrack($questionId)
+    {
+        $processedData = [];
+
+        $select = $this->select();
+        $select->from('poll_answer_track')
+            ->columns([
+                'answer_id',
+                'answer_count' => new Expression('count(answer_id)')
+            ])
+            ->where([
+                'question_id' => $questionId
+            ])
+            ->group('answer_id');
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $resultSet = new ResultSet;
+        $resultSet->initialize($statement->execute());
+
+        if (!$resultSet->count()) {
+            return $processedData;
+        }
+
+        // process track data
+        foreach($resultSet as $data)
+        {
+            $processedData[$data->answer_id] = $data->answer_count;
+        }
+
+        return $processedData;
+    }
+
     /**
      * Get answers
      *

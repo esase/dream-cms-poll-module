@@ -71,3 +71,19 @@ CREATE TABLE IF NOT EXISTS `poll_answer` (
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `poll_answer_track` (
+    `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `question_id` INT(11) UNSIGNED NOT NULL,
+    `answer_id` INT(11) UNSIGNED NOT NULL,
+    `ip` VARBINARY(16) NOT NULL,
+    `created` INT(10) UNSIGNED NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE `visitor` (`question_id`, `ip`, `answer_id`),
+    FOREIGN KEY (`question_id`) REFERENCES `poll_question`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (`answer_id`) REFERENCES `poll_answer`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
