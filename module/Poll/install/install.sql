@@ -27,6 +27,14 @@ INSERT INTO `acl_resource` (`resource`, `description`, `module`) VALUES
 ('polls_administration_delete_answers', 'ACL - Deleting poll answers in admin area', @moduleId),
 ('polls_administration_edit_answer', 'ACL - Editing poll answers in admin area', @moduleId);
 
+INSERT INTO `acl_resource` (`resource`, `description`, `module`) VALUES
+('polls_make_votes', 'ACL - Making votes in polls', @moduleId);
+SET @makePollsVotesResourceId = (SELECT LAST_INSERT_ID());
+
+INSERT INTO `acl_resource_connection` (`role`, `resource`) VALUES
+(3, @makePollsVotesResourceId),
+(2, @makePollsVotesResourceId);
+
 -- application events
 
 INSERT INTO `application_event` (`name`, `module`, `description`) VALUES
@@ -36,6 +44,15 @@ INSERT INTO `application_event` (`name`, `module`, `description`) VALUES
 ('poll_add_answer', @moduleId, 'Event - Adding poll answers'),
 ('poll_delete_answer', @moduleId, 'Event - Deleting poll answers'),
 ('poll_edit_answer', @moduleId, 'Event - Editing poll answers');
+
+-- system pages and widgets
+
+INSERT INTO `page_widget` (`name`, `module`, `type`, `description`, `duplicate`, `forced_visibility`, `depend_page_id`) VALUES
+('pollWidget', @moduleId, 'public', 'Poll', 1, NULL, NULL);
+SET @widgetId = (SELECT LAST_INSERT_ID());
+
+INSERT INTO `page_widget_setting` (`name`, `widget`, `label`, `type`, `required`, `order`, `category`, `description`, `check`,  `check_message`, `values_provider`) VALUES
+('poll_question', @widgetId, 'Question', 'select', 1, 1, 1, NULL, NULL, NULL, 'return Poll\\Service\\Poll::getAllQuestions();');
 
 -- module tables
 
@@ -59,6 +76,22 @@ CREATE TABLE IF NOT EXISTS `poll_answer` (
     `order` SMALLINT(5) NOT NULL DEFAULT '0',
     PRIMARY KEY (`id`),
     FOREIGN KEY (`question_id`) REFERENCES `poll_question`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `poll_answer_track` (
+    `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `question_id` INT(11) UNSIGNED NOT NULL,
+    `answer_id` INT(11) UNSIGNED NOT NULL,
+    `ip` VARBINARY(16) NOT NULL,
+    `created` INT(10) UNSIGNED NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE `visitor` (`question_id`, `ip`),
+    FOREIGN KEY (`question_id`) REFERENCES `poll_question`(`id`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (`answer_id`) REFERENCES `poll_answer`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

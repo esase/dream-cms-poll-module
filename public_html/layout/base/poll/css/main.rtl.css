@@ -1,0 +1,10 @@
+.poll-wrapper .poll-values-wrapper .poll-result-stat {
+  padding-left: 0;
+  padding-right: 5px;
+}
+.poll-wrapper .poll-date {
+  float: right;
+}
+.poll-wrapper .poll-links {
+  float: left;
+}

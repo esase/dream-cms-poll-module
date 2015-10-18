@@ -1,0 +1,26 @@
+<?php $this->declareVars('index') ?>
+<?php $this->pollResult()->setQuestionId($this->question_id) ?>
+
+<ul id="poll-result-<?php echo (int) $this->question_id ?>" class="poll-result">
+    <?php foreach($this->answers as $answer):  ?>
+        <?php $this->index++ ?>
+        <li>
+            <div class="poll-result-answer">
+                <?php echo $this->escapeHtml($answer['answer']) ?> (<b><?php echo (int) $this->pollResult()->getTrackValue($answer['id']) ?></b>)
+            </div>
+            <div class="poll-result-stat" data-stat="<?php echo (int) $this->pollResult()->getTrackStat($answer['id']) ?>" style="background-color: rgba(<?php echo $this->pollResult()->getBackgroundColor($this->index) ?>, 0.2);">
+                <small><?php echo (int) $this->pollResult()->getTrackStat($answer['id']) ?>%</small>
+            </div>
+        </li>
+    <?php endforeach ?>
+</ul>
+
+<script type="text/javascript">
+    $("#poll-result-<?php echo (int) $this->question_id ?>").find(".poll-result-stat").each(function() {
+        if (parseInt($(this).attr("data-stat"))) {
+            $(this).animate({
+                width: $(this).attr("data-stat") + "%",
+            });
+        }
+    });
+</script>

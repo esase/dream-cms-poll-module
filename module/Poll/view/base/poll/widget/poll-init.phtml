@@ -1,0 +1,31 @@
+<div id="poll-wrapper-<?php echo (int) $this->connection_id ?>" class="poll-wrapper">
+    <div class="media">
+        <div class="media-body">
+            <h4 class="media-heading">
+                <?php echo $this->escapeHtml($this->question_info['question']) ?>
+            </h4>
+            <div class="poll-values-wrapper relative-wrapper">
+                <?php echo $this->answers ?>
+            </div>
+            <div class="poll-date"><?php echo $this->applicationDate($this->question_info['created']) ?></div>
+            <div class="poll-links" data-action="results">
+                <a href="#"><?php echo $this->translate('Result') ?></a>
+            </div>
+            <div class="poll-links not-active-poll-link" data-action="answers">
+                <a href="#"><?php echo $this->translate('Poll') ?></a>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+</div>
+
+<?php $this->inlineScript()->captureStart() ?>
+    var poll = new Poll({
+        "csrf" : "<?php echo $this->escapeJs($this->csrf) ?>",
+        "url" : "<?php echo $this->escapeJs($this->widget_url) ?>",
+        "wrapper_id": "#poll-wrapper-<?php echo (int) $this->connection_id ?>",
+        "values_wrapper" : ".poll-values-wrapper",
+        "links" : ".poll-links",
+        "not_active_link" : "not-active-poll-link"
+    });
+<?php $this->inlineScript()->captureEnd() ?>

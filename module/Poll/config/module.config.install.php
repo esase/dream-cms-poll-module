@@ -45,7 +45,7 @@ return [
         'css_cache'     => false,
         'layout'        => false,
         'localization'  => false,
-        'page'          => false,
+        'page'          => true,
         'user'          => false,
         'xmlrpc'        => false
     ],

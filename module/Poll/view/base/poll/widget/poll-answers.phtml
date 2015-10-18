@@ -1,0 +1,7 @@
+<ul class="poll-answers">
+    <?php foreach($this->answers as $answer):  ?>
+        <li><input  <?php if($this->is_voting_disabled): ?>disabled="disabled"<?php endif ?> type="radio" data-id="<?php echo (int) $answer['id'] ?>" name="poll-<?php echo (int) $this->connection_id ?>" />
+            <?php echo $this->escapeHtml($answer['answer']) ?>
+        </li>
+    <?php endforeach ?>
+</ul>

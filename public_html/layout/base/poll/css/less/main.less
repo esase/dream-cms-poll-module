@@ -1,0 +1,34 @@
+@import "variables/main.less";
+
+.poll-wrapper {
+    .poll-values-wrapper {
+        ul.poll-answers,
+        ul.poll-result {
+            padding: 0;
+            margin-top: @poll-result-margin-top;
+            margin-bottom: @poll-result-margin-bottom;
+
+            li {
+                list-style: none;
+                padding-top: @poll-result-li-padding-top;
+            }
+        }
+
+        .poll-result-stat {
+            width: @poll-result-poll-result-stat-width;
+            padding-left: @poll-result-poll-result-stat-padding-left;
+        }
+    }
+
+	.poll-date {
+	    float:left;
+	}
+
+	.poll-links {
+	    float:right;
+	}
+
+	.poll-links.not-active-poll-link {
+	    display: none;
+	}
+}

@@ -29,6 +29,35 @@ use Zend\Db\Sql\Predicate\NotIn as NotInPredicate;
 class PollBase extends ApplicationAbstractBase
 {
     /**
+     * Get all questions
+     *
+     * @param string $language
+     * @return \Zend\Db\ResultSet\ResultSet
+     */
+    public function getAllQuestions($language = null)
+    {
+        $select = $this->select();
+        $select->from('poll_question')
+            ->columns([
+                'id',
+                'question',
+                'language'
+            ]);
+
+        if ($language) {
+            $select->where([
+                'language' => $language
+            ]);
+        }
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $resultSet = new ResultSet;
+        $resultSet->initialize($statement->execute());
+
+        return $resultSet;
+    }
+
+    /**
      * Is question free
      *
      * @param string $question
@@ -73,7 +102,8 @@ class PollBase extends ApplicationAbstractBase
         $select->from('poll_question')
             ->columns([
                 'id',
-                'question'
+                'question',
+                'created'
             ])
             ->where([
                 'id' => $id

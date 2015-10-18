@@ -20,19 +20,41 @@
  * Display of Attribution Information is required in Larger Works which are defined in the CPAL as a work
  * which combines Covered Code or portions thereof with code not governed by the terms of the CPAL.
  */
-return [
-    'Poll\Test\PollBootstrap'                      => __DIR__ . '/test/Bootstrap.php',
-    'Poll\Controller\PollAdministrationController' => __DIR__ . '/src/Poll/Controller/PollAdministrationController.php',
-    'Poll\Service\Poll'                            => __DIR__ . '/src/Poll/Service/Poll.php',
-    'Poll\View\Helper\PollResult'                  => __DIR__ . '/src/Poll/View/Helper/PollResult.php',
-    'Poll\View\Widget\PollWidget'                  => __DIR__ . '/src/Poll/View/Widget/PollWidget.php',
-    'Poll\Form\PollQuestionFilter'                 => __DIR__ . '/src/Poll/Form/PollQuestionFilter.php',
-    'Poll\Form\PollQuestion'                       => __DIR__ . '/src/Poll/Form/PollQuestion.php',
-    'Poll\Form\PollAnswer'                         => __DIR__ . '/src/Poll/Form/PollAnswer.php',
-    'Poll\Event\PollEvent'                         => __DIR__ . '/src/Poll/Event/PollEvent.php',
-    'Poll\Exception\PollException'                 => __DIR__ . '/src/Poll/Exception/PollException.php',
-    'Poll\Model\PollBase'                          => __DIR__ . '/src/Poll/Model/PollBase.php',
-    'Poll\Model\PollWidget'                        => __DIR__ . '/src/Poll/Model/PollWidget.php',
-    'Poll\Model\PollAdministration'                => __DIR__ . '/src/Poll/Model/PollAdministration.php',
-    'Poll\Module'                                  => __DIR__ . '/Module.php'
-];
+namespace Poll\Service;
+
+use Application\Service\ApplicationServiceLocator as ServiceLocatorService;
+use Localization\Service\Localization as LocalizationService;
+
+class Poll
+{
+    /**
+     * Questions
+     *
+     * @var array
+     */
+    protected static $questions = null;
+
+    /**
+     * Get all questions
+     *
+     * @return array
+     */
+    public static function getAllQuestions()
+    {
+        if (null === self::$questions) {
+            $questions = ServiceLocatorService::getServiceLocator()
+                ->get('Application\Model\ModelManager')
+                ->getInstance('Poll\Model\PollBase')
+                ->getAllQuestions(LocalizationService::getCurrentLocalization()['language']);
+
+			// process questions
+			self::$questions = [];
+
+			foreach ($questions as $question) {
+				self::$questions[$question->id] = $question->question;
+			}
+        }
+
+        return self::$questions;
+    }
+}
