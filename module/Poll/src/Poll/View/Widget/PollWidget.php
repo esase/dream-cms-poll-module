@@ -22,7 +22,9 @@
  */
 namespace Poll\View\Widget;
 
+use Acl\Service\Acl as AclService;
 use Page\View\Widget\PageAbstractWidget;
+use Application\Utility\ApplicationCsrf;
 
 class PollWidget extends PageAbstractWidget
 {
@@ -56,6 +58,14 @@ class PollWidget extends PageAbstractWidget
      */
     public function includeJsCssFiles()
     {
+        $this->getView()->layoutHeadLink()->
+                appendStylesheet($this->getView()->layoutAsset('main.css', 'css', 'poll'));
+
+        if (!$this->getView()->localization()->isCurrentLanguageLtr()) {
+            $this->getView()->layoutHeadLink()->
+                    appendStylesheet($this->getView()->layoutAsset('main.rtl.css', 'css', 'poll'));
+        }
+
         $this->getView()->layoutHeadScript()->
                 appendFile($this->getView()->layoutAsset('poll.js', 'js', 'poll'));
     }
@@ -67,27 +77,32 @@ class PollWidget extends PageAbstractWidget
      */
     public function getContent() 
     {
-        //TODO: add permission for making votes
-        // TODO: Add csrf key
-
         if (null != ($questionId = $this->getWidgetSetting('poll_question'))) {
             // get a question info
             if (null != ($questionInfo = $this->getModel()->getQuestionInfo($questionId))) {
                 // get list of answers
                 $answers = $this->getModel()->getAnswers($questionId);
+                $isVotingDisabled = $this->getModel()->
+                    isAnswerVoteExist($questionId) || !AclService::checkPermission('polls_make_votes', false);
 
                 if (count($answers) > 1)
                 {
                     // process post actions
-                    if ($this->getRequest()->isPost()) {
+                    if ($this->getRequest()->isPost()
+                            && ApplicationCsrf::isTokenValid($this->getRequest()->getPost('csrf'))) {
+
                         if (false !== ($action = $this->
                                 getRequest()->getPost('widget_action', false)) && $this->getRequest()->isXmlHttpRequest()) {
 
                             switch ($action) {
                                 case 'make_vote' :
-                                    return $this->getView()->json([
-                                        'data' => $this->makeVote($questionId, $answers)
-                                    ]);
+                                    if (false !== ($answerId = $this->
+                                            getRequest()->getPost('answer_id', false)) && !$isVotingDisabled) {
+
+                                        return $this->getView()->json([
+                                            'data' => $this->addAnswerVote($questionId, $answerId, $answers)
+                                        ]);
+                                    }
 
                                 default :
                             }
@@ -96,12 +111,12 @@ class PollWidget extends PageAbstractWidget
 
                     // process get actions
                     if (false !== ($action = $this->getRequest()->
-                            getQuery('widget_action')) && $this->getRequest()->isXmlHttpRequest()) {
+                            getQuery('widget_action', false)) && $this->getRequest()->isXmlHttpRequest()) {
 
                         switch ($action) {
                             case 'get_answers' :
                                 return $this->getView()->json([
-                                    'data' => $this->getPollAnswers($answers)
+                                    'data' => $this->getPollAnswers($answers, $isVotingDisabled)
                                 ]);
 
                             case 'get_results' :
@@ -113,10 +128,11 @@ class PollWidget extends PageAbstractWidget
                     }
 
                     return $this->getView()->partial('poll/widget/poll-init', [
+                        'csrf' =>ApplicationCsrf::getToken(),
                         'widget_url' => $this->getWidgetConnectionUrl(),
                         'connection_id' => $this->widgetConnectionId,
                         'question_info' => $questionInfo,
-                        'answers' => $this->getPollAnswers($answers)
+                        'answers' => $this->getPollAnswers($answers, $isVotingDisabled)
                     ]);
                 }
             }
@@ -126,15 +142,23 @@ class PollWidget extends PageAbstractWidget
     }
 
     /**
-     * Make vote
+     * Add answer vote
      *
      * @param integer $questionId
+     * @param integer $answerId
      * @param array $answers
      * @return string
      */
-    protected function makeVote($questionId, $answers)
+    protected function addAnswerVote($questionId, $answerId, $answers)
     {
-        return $this->getPollResult($questionId, $answers);
+        if (true === ($result =
+                $this->getModel()->addAnswerVote($questionId, $answerId))) {
+
+            // increase acl track
+            AclService::checkPermission('polls_make_votes');
+
+            return $this->getPollResult($questionId, $answers);
+        }
     }
 
     /**
@@ -156,11 +180,13 @@ class PollWidget extends PageAbstractWidget
      * Get poll answers
      *
      * @param array $answers
+     * @param boolean $isVotingDisabled
      * @return string
      */
-    protected function getPollAnswers($answers)
+    protected function getPollAnswers($answers, $isVotingDisabled)
     {
         return $this->getView()->partial('poll/widget/poll-answers', [
+            'is_voting_disabled' =>$isVotingDisabled,
             'connection_id' => $this->widgetConnectionId,
             'answers' => $answers
         ]);

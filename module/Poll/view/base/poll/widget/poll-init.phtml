@@ -1,35 +1,3 @@
-<style>
-    .poll-wrapper .poll-values-wrapper ul.poll-answers,
-    .poll-wrapper .poll-values-wrapper ul.poll-result {
-        padding:0;
-        margin-top:20px;
-        margin-bottom:20px;
-    }
-
-    .poll-wrapper .poll-values-wrapper ul.poll-answers li,
-    .poll-wrapper .poll-values-wrapper ul.poll-result li{
-        list-style: none;
-        padding-top:10px;
-    }
-
-    .poll-wrapper .poll-values-wrapper .poll-result-stat {
-        width: 25px;
-        padding-left:5px;
-    }
-    .poll-wrapper .poll-date {
-        float:left;
-    }
-
-    .poll-wrapper .poll-links {
-        float:right;
-    }
-
-    .poll-wrapper .poll-links.not-active-poll-link {
-        display: none;
-    }
-</style>
-
-
 <div id="poll-wrapper-<?php echo (int) $this->connection_id ?>" class="poll-wrapper">
     <div class="media">
         <div class="media-body">
@@ -53,6 +21,7 @@
 
 <?php $this->inlineScript()->captureStart() ?>
     var poll = new Poll({
+        "csrf" : "<?php echo $this->escapeJs($this->csrf) ?>",
         "url" : "<?php echo $this->escapeJs($this->widget_url) ?>",
         "wrapper_id": "#poll-wrapper-<?php echo (int) $this->connection_id ?>",
         "values_wrapper" : ".poll-values-wrapper",

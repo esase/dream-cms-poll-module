@@ -10,6 +10,7 @@ Poll = function (options) {
      * @var array object
      */
     var pollOptions = {
+        "csrf" : null,
         "url" : null,
         "wrapper_id": null,
         "values_wrapper" : null,
@@ -45,7 +46,7 @@ Poll = function (options) {
                         $container.html(data.data);
 
                         initPollInputs();
-                    }, 'get', {
+                    }, "get", {
                         "widget_action" : "get_answers"
                     }, false);
                     break;
@@ -56,7 +57,7 @@ Poll = function (options) {
                     ajaxQuery($container, pollOptions.url, function(data){
                         data =  $.parseJSON(data);
                         $container.html(data.data);
-                    }, 'get', {
+                    }, "get", {
                         "widget_action" : "get_results"
                     }, false);
             }
@@ -75,9 +76,10 @@ Poll = function (options) {
             ajaxQuery($container, pollOptions.url, function(data){
                 data =  $.parseJSON(data);
                 $container.html(data.data);
-            }, 'post', {
+            }, "post", {
                 "widget_action" : "make_vote",
-                "answer_id" : $(this).attr("data-id")
+                "answer_id" : $(this).attr("data-id"),
+                "csrf" : pollOptions.csrf
             }, false);
         });
     }

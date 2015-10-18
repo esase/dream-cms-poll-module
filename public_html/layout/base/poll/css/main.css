@@ -1,0 +1,24 @@
+.poll-wrapper .poll-values-wrapper ul.poll-answers,
+.poll-wrapper .poll-values-wrapper ul.poll-result {
+  padding: 0;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+.poll-wrapper .poll-values-wrapper ul.poll-answers li,
+.poll-wrapper .poll-values-wrapper ul.poll-result li {
+  list-style: none;
+  padding-top: 10px;
+}
+.poll-wrapper .poll-values-wrapper .poll-result-stat {
+  width: 25px;
+  padding-left: 5px;
+}
+.poll-wrapper .poll-date {
+  float: left;
+}
+.poll-wrapper .poll-links {
+  float: right;
+}
+.poll-wrapper .poll-links.not-active-poll-link {
+  display: none;
+}

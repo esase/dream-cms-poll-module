@@ -27,6 +27,14 @@ INSERT INTO `acl_resource` (`resource`, `description`, `module`) VALUES
 ('polls_administration_delete_answers', 'ACL - Deleting poll answers in admin area', @moduleId),
 ('polls_administration_edit_answer', 'ACL - Editing poll answers in admin area', @moduleId);
 
+INSERT INTO `acl_resource` (`resource`, `description`, `module`) VALUES
+('polls_make_votes', 'ACL - Making votes in polls', @moduleId);
+SET @makePollsVotesResourceId = (SELECT LAST_INSERT_ID());
+
+INSERT INTO `acl_resource_connection` (`role`, `resource`) VALUES
+(3, @makePollsVotesResourceId),
+(2, @makePollsVotesResourceId);
+
 -- application events
 
 INSERT INTO `application_event` (`name`, `module`, `description`) VALUES
@@ -79,7 +87,7 @@ CREATE TABLE `poll_answer_track` (
     `ip` VARBINARY(16) NOT NULL,
     `created` INT(10) UNSIGNED NOT NULL,
     PRIMARY KEY (`id`),
-    UNIQUE `visitor` (`question_id`, `ip`, `answer_id`),
+    UNIQUE `visitor` (`question_id`, `ip`),
     FOREIGN KEY (`question_id`) REFERENCES `poll_question`(`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE,

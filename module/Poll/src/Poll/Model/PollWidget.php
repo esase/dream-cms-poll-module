@@ -22,11 +22,82 @@
  */
 namespace Poll\Model;
 
+use Application\Utility\ApplicationErrorLogger;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Expression as Expression;
+use Zend\Http\PhpEnvironment\RemoteAddress;
+use Exception;
 
 class PollWidget extends PollBase
 {
+    /**
+     * Is answer vote exist
+     *
+     * @param integer $questionId
+     * @return boolean
+     */
+    public function isAnswerVoteExist($questionId)
+    {
+        $remote = new RemoteAddress;
+        $remote->setUseProxy(true);
+
+        $select = $this->select();
+        $select->from('poll_answer_track')
+            ->columns([
+                'id'
+            ])
+            ->where([
+                'question_id' => $questionId,
+                'ip' => inet_pton($remote->getIpAddress())
+            ]);
+
+        $statement = $this->prepareStatementForSqlObject($select);
+        $resultSet = new ResultSet;
+        $resultSet->initialize($statement->execute());
+
+        return !empty($resultSet->current());
+    }
+
+    /**
+     * Add answer vote
+     *
+     * @param integer $questionId
+     * @param integer $answerId
+     * @return string|boolean
+     */
+    public function addAnswerVote($questionId, $answerId)
+    {
+        try {
+            $this->adapter->getDriver()->getConnection()->beginTransaction();
+
+            $remote = new RemoteAddress;
+            $remote->setUseProxy(true);
+
+            // add a track info
+            $insert = $this->insert()
+                ->into('poll_answer_track')
+                ->values([
+                    'question_id' => $questionId,
+                    'answer_id' => $answerId,
+                    'ip' => inet_pton($remote->getIpAddress()),
+                    'created' => time()
+                ]);
+
+            $statement = $this->prepareStatementForSqlObject($insert);
+            $statement->execute();
+
+            $this->adapter->getDriver()->getConnection()->commit();
+        }
+        catch (Exception $e) {
+            $this->adapter->getDriver()->getConnection()->rollback();
+            ApplicationErrorLogger::log($e);
+
+            return $e->getMessage();
+        }
+
+        return true;
+    }
+
     /**
      * Get answer track
      *
