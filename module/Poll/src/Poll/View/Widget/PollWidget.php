@@ -99,10 +99,15 @@ class PollWidget extends PageAbstractWidget
                                     if (false !== ($answerId = $this->
                                             getRequest()->getPost('answer_id', false)) && !$isVotingDisabled) {
 
-                                        return $this->getView()->json([
-                                            'data' => $this->addAnswerVote($questionId, $answerId, $answers)
-                                        ]);
+                                        if (true === ($result = $this->getModel()->addAnswerVote($questionId, $answerId))) {
+                                            // increase acl track
+                                            AclService::checkPermission('polls_make_votes');
+                                        }
                                     }
+
+                                    return $this->getView()->json([
+                                        'data' => $this->getPollResult($questionId, $answers)
+                                    ]);
 
                                 default :
                             }
@@ -149,7 +154,7 @@ class PollWidget extends PageAbstractWidget
      * @param array $answers
      * @return string
      */
-    protected function addAnswerVote($questionId, $answerId, $answers)
+   /* protected function addAnswerVote($questionId, $answerId, $answers)
     {
         if (true === ($result =
                 $this->getModel()->addAnswerVote($questionId, $answerId))) {
@@ -160,7 +165,7 @@ class PollWidget extends PageAbstractWidget
             return $this->getPollResult($questionId, $answers);
         }
     }
-
+*/
     /**
      * Get poll result
      *
@@ -172,6 +177,7 @@ class PollWidget extends PageAbstractWidget
     {
         return $this->getView()->partial('poll/widget/poll-results', [
             'question_id' => $questionId,
+            'connection_id' => $this->widgetConnectionId,
             'answers' => $answers,
         ]);
     }

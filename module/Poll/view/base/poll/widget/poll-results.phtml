@@ -1,7 +1,7 @@
 <?php $this->declareVars('index') ?>
 <?php $this->pollResult()->setQuestionId($this->question_id) ?>
 
-<ul id="poll-result-<?php echo (int) $this->question_id ?>" class="poll-result">
+<ul id="poll-result-<?php echo (int) $this->connection_id ?>" class="poll-result">
     <?php foreach($this->answers as $answer):  ?>
         <?php $this->index++ ?>
         <li>
@@ -16,7 +16,7 @@
 </ul>
 
 <script type="text/javascript">
-    $("#poll-result-<?php echo (int) $this->question_id ?>").find(".poll-result-stat").each(function() {
+    $("#poll-result-<?php echo (int) $this->connection_id ?>").find(".poll-result-stat").each(function() {
         if (parseInt($(this).attr("data-stat"))) {
             $(this).animate({
                 width: $(this).attr("data-stat") + "%",
